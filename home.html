@@ -1,0 +1,244 @@
+<script src="https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js"></script>
+
+<!--All text items are reference from wikipidea-->
+<!--Some code elements were unable to display because they were meta codes-->
+
+<!DOCTYPE html>
+<html>
+     <head>
+  <link rel="stylesheet" href="style.css">
+  <nav id="navbar">
+      <header class="title">EPUB</header>              
+    <ul>
+      <li><a class="nav-link" href="#History">History</a></li>
+      <li><a class="nav-link" href="#Features">Features</a></li>
+      <li><a class="nav-link" href="#Adoption">Adoption</a></li>
+      <li><a class="nav-link" href="#Security_and_Privacy_Concerns">Security and Privacy Concerns</a></li>
+      <li><a class="nav-link" href="#Implementation">Implementation</a></li>
+    </ul> 
+  </nav>  
+  </head>
+  
+  </body>
+  <main id="main-doc">
+    <section class="main-section" id="History">
+     <header>History</header>
+      
+      <p>EPUB is an e-book file format that uses the ".epub" file extension. The term is short for electronic publication and is sometimes styled ePub. EPUB is supported by many e-readers, and compatible software is available for most smartphones, tablets, and computers. EPUB is a technical standard published by the International Digital Publishing Forum (IDPF). It became an official standard of the IDPF in September 2007, superseding the older Open eBook standard.
+</p>
+ <p>The Book Industry Study Group endorses EPUB 3 as the format of choice for packaging content and has stated that the global book publishing industry should rally around a single standard. The EPUB format is implemented as an archive file consisting of XHTML files carrying the content, along with images and other supporting files. EPUB is the most widely supported vendor-independent XML-based (as opposed to PDF) e-book format; that is, it is supported by almost all hardware readers, except for Kindle.</p>
+      
+      <p>An example skeleton of an XHTML file for EPUB looks like this:</p>
+    
+        <code>
+          <!--<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" />-->
+    <title>Pride and Prejudice</title>
+    <link rel="stylesheet" href="css/main.css" type="text/css" />
+  <!--</head>
+  <body>
+    ...
+  </body>
+</html>-->
+</code>
+      
+      <h2>Open Packaging Format 2.0.1</h2>
+<p>The OPF specification's purpose is to "...[define] the mechanism by which the various components of an OPS publication are tied together and provides additional structure and semantics to the electronic publication." This is accomplished by two XML files with the extensions .opf and .ncx.</p>
+
+      <h3>.opf file</h3>
+<p>The OPF file, traditionally named content.opf, houses the EPUB book's metadata, file manifest, and linear reading order. This file has a root element package and four child elements: metadata, manifest, spine, and guide. Furthermore, the package node must have the unique-identifier attribute. The .opf file's mimetype is application/oebps-package+xml.</p>
+
+<p>The metadata element contains all the metadata information for a particular EPUB file. Three metadata tags are required (though many more are available): title, language, and identifier. title contains the title of the book, language contains the language of the book's contents in RFC 3066 format or its successors, such as the newer RFC 4646 and identifier contains a unique identifier for the book, such as its ISBN or a URL. The identifier's id attribute should equal the unique-identifier attribute from the package element.</p>
+
+<p>The manifest element lists all the files contained in the package. Each file is represented by an item element, and has the attributes id, href, media-type. All XHTML (content documents), stylesheets, images or other media, embedded fonts, and the NCX file should be listed here. Only the .opf file itself, the container.xml, and the mimetype files should not be included. Note that in the example below, an arbitrary media-type is given to the included font file, even though no mimetype exists for fonts.</p>
+
+<p>The spine element lists all the XHTML content documents in their linear reading order. Also, any content document that can be reached through linking or the table of contents must be listed as well. The toc attribute of spine must contain the id of the NCX file listed in the manifest. Each itemref element's idref is set to the id of its respective content document.</p>
+
+<p>The guide element is an optional element for the purpose of identifying fundamental structural components of the book. Each reference element has the attributes type, title, href. Files referenced in href must be listed in the manifest, and are allowed to have an element identifier (e.g. #figures in the example).</p>
+      
+      <p>An example OPF file:</p>
+      <code>
+        <!--<?xml version="1.0"?>
+<package version="2.0" xmlns="http://www.idpf.org/2007/opf" unique-identifier="BookId">
+
+  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:opf="http://www.idpf.org/2007/opf">
+    <dc:title>Pride and Prejudice</dc:title>
+    <dc:language>en</dc:language>
+    <dc:identifier id="BookId" opf:scheme="ISBN">123456789X</dc:identifier>
+    <dc:creator opf:file-as="Austen, Jane" opf:role="aut">Jane Austen</dc:creator>
+  </metadata>-->
+
+  <manifest>
+    <item id="chapter1" href="chapter1.xhtml" media-type="application/xhtml+xml"/>
+    <item id="appendix" href="appendix.xhtml" media-type="application/xhtml+xml"/>
+    <item id="stylesheet" href="style.css" media-type="text/css"/>
+    <item id="ch1-pic" href="ch1-pic.png" media-type="image/png"/>
+    <item id="myfont" href="css/myfont.otf" media-type="application/x-font-opentype"/>
+    <item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml"/>
+  </manifest>
+
+  <spine toc="ncx">
+    <itemref idref="chapter1" />
+    <itemref idref="appendix" />
+  </spine>
+
+  <!--<guide>
+    <reference type="loi" title="List Of Illustrations" href="appendix.xhtml#figures" />
+  </guide>
+
+</package>-->
+      </code>
+      
+      <h3>.ncx file</h3>
+      
+      <p>The NCX file (Navigation Control file for XML), traditionally named toc.ncx, contains the hierarchical table of contents for the EPUB file. The specification for NCX was developed for Digital Talking Book (DTB), is maintained by the DAISY Consortium, and is not a part of the EPUB specification. The NCX file has a mimetype of application/x-dtbncx+xml.</p>
+
+<p>Of note here is that the values for the docTitle, docAuthor, and meta name="dtb:uid" elements should match their analogs in the OPF file. Also, the meta name="dtb:depth" element is set equal to the depth of the navMap element. navPoint elements can be nested to create a hierarchical table of contents. navLabel's content is the text that appears in the table of contents generated by reading systems that use the .ncx. navPoint's content element points to a content document listed in the manifest and can also include an element identifier (e.g. #section1).
+ </p>
+      
+<p>A description of certain exceptions to the NCX specification as used in EPUB is in Section 2.4.1 of the specification. The complete specification for NCX can be found in Section 8 of the Specifications for the Digital Talking Book.</p>
+      
+      
+      
+      <p>An example .ncx file:</p>
+      <code>
+        <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ncx PUBLIC "-//NISO//DTD ncx 2005-1//EN"
+"http://www.daisy.org/z3986/2005/ncx-2005-1.dtd">
+
+<ncx version="2005-1" xml:lang="en" xmlns="http://www.daisy.org/z3986/2005/ncx/">
+
+  <head>
+<!-- The following four metadata items are required for all NCX documents,
+including those that conform to the relaxed constraints of OPS 2.0 -->
+
+    <meta name="dtb:uid" content="123456789X"/> <!-- same as in .opf -->
+    <meta name="dtb:depth" content="1"/> <!-- 1 or higher -->
+    <meta name="dtb:totalPageCount" content="0"/> <!-- must be 0 -->
+    <meta name="dtb:maxPageNumber" content="0"/> <!-- must be 0 -->
+  </head>
+
+  <docTitle>
+    <text>Pride and Prejudice</text>
+  </docTitle>
+
+  <docAuthor>
+    <text>Austen, Jane</text>
+  </docAuthor>
+
+  <navMap>
+    <navPoint class="chapter" id="chapter1" playOrder="1">
+      <navLabel><text>Chapter 1</text></navLabel>
+      <content src="chapter1.xhtml"/>
+    </navPoint>
+  </navMap>
+
+</ncx>
+      </code>
+      
+      
+      
+      
+      
+    </section>     
+     
+     <section class="main-section" id="Features">
+     <header>Features</header>
+      
+      
+       <p>The format and many readers support the following:</p>
+<ul>
+<li>Reflowable document: optimize text for a particular display</li>
+<li>Fixed-layout content: pre-paginated content can be useful for certain kinds of highly designed content, such as illustrated books intended only for larger screens, such as tablets</li>
+<li>Like an HTML web site, the format supports inline raster and vector images, metadata, and CSS styling</li>
+<li>Page bookmarking</li>
+<li>Passage highlighting and notes</li>
+<li>A library that stores books and can be searched</li>
+<li>Re-sizable fonts, and changeable text and background colors</li>
+<li>Support for a subset of MathML</li>
+<li>Digital rights management—can contain digital rights management (DRM) as an optional layer</li>
+<ul>       
+  </section>       
+       
+        
+        
+     <section class="main-section" id="Adoption">
+     <header>Adoption</header>
+      
+      <p>EPUB is widely used on software readers such as Google Play Books on Android and Apple Books on iOS and macOS, but not by Amazon Kindle's e-readers or associated apps for other platforms. Kindle uses mainly the Mobipocket (MOBI) format, or their proprietary formats AZW, AZW3 or KFX. iBooks also supports the proprietary iBook format, which is based on the EPUB format but depends upon code from the iBooks app to function.</p>
+
+<p>EPUB is a popular format for electronic data interchange because it can be an open format and is based on HTML, as opposed to Amazon's proprietary format for Kindle readers. Popular EPUB producers of public domain and open licensed content include Project Gutenberg, PubMed Central, SciELO and others.</p> 
+      
+  </section>
+       
+     <section class="main-section" id="Security_and_Privacy_Concerns">
+     <header>Security and Privacy Concerns</header> 
+     
+      <p>EPUB requires readers to support the HTML5, JavaScript, CSS, SVG formats, making EPUB readers use the same technology as web browsers.</p>
+
+<p>Such formats are associated with various types of security issues and privacy-breaching behaviors e.g. Web beacons, CSRF, XSHM due to their complexity and flexibility.</p>
+
+<p>Such vulnerabilities can be used to implement Web tracking and Cross-device tracking on EPUB files.</p>
+
+<p>Security researchers also identified attacks leading to local files and other user data being uploaded.</p>
+
+       <p>The "EPUB 3.1 Overview" document provides a security warning:</p>
+
+<blockquote>Authors need to be aware that scripting in an EPUB Publication can create security considerations that are different from scripting within a Web browser. For example, typical same-origin policies are not applicable to content that has been downloaded to a user's local system. Therefore, it is strongly encouraged that scripting be limited to container constrained contexts.</blockquote>
+
+<p>EPUB also requires PNG, JPEG and GIF.<p>
+  </section>      
+       
+       
+       
+      <section class="main-section" id="Implementation">
+      <header>Implementation</header>  
+ 
+      <p>An EPUB file is an archive that contains, in effect, a website. It includes HTML files, images, CSS style sheets, and other assets. It also contains metadata. EPUB 3.2 is the latest version. By using HTML5, publications can contain video, audio, and interactivity, just like websites in web browsers.</p>
+
+        <h2>Container</h2>
+<p>An EPUB publication is delivered as a single file. This file is an unencrypted zipped archive containing a set of interrelated resources.</p>
+
+<p>An OCF (Open Container Format) Abstract Container defines a file system model for the contents of the container. The file system model uses a single common root directory for all contents in the container. All (non-remote) resources for publications are in the directory tree headed by the container's root directory, though EPUB mandates no specific file system structure for this. The file system model includes a mandatory directory named META-INF that is a direct child of the container's root directory. META-INF stores container.xml.</p>
+
+<p>The first file in the archive must be the mimetype file. It must be unencrypted and uncompressed so that non-ZIP utilities can read the mimetype. The mimetype file must be an ASCII file that contains the string "application/epub+zip". This file provides a more reliable way for applications to identify the mimetype of the file than just the .epub extension.</p>
+
+        <p>An example file structure:</p>
+
+<code>
+  --ZIP Container--
+mimetype
+META-INF/
+  container.xml
+OEBPS/
+  content.opf
+  chapter1.xhtml
+  ch1-pic.png
+  css/
+    style.css
+    myfont.otf
+  toc.ncx
+ </code>  
+        
+<p>There must be a META-INF directory containing container.xml. This file points to the file defining the contents of the book, the OPF file, though additional alternative rootfile elements are allowed. Apart from mimetype and META-INF/container.xml, the other files (OPF, NCX, XHTML, CSS and images files) are traditionally put in a directory named OEBPS. An example container.xml:</p>
+
+ <code>       
+<?xml version="1.0" encoding="UTF-8" ?>
+<container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container">
+  <rootfiles>
+    <rootfile full-path="OEBPS/content.opf" media-type="application/oebps-package+xml"/>
+  </rootfiles>
+</container>
+        </code>       
+  </section>        
+   </main> 
+       </body>
+</html>
+
+
+
+
+
